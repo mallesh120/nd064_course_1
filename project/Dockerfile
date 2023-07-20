@@ -10,7 +10,7 @@ COPY ./techtrends /app
 WORKDIR /app
 
 # Copy the requirements.txt file to the container
-COPY requirements.txt .
+# COPY requirements.txt .
 
 # Install the required packages
 RUN pip install -r requirements.txt
