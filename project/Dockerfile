@@ -4,6 +4,7 @@ FROM python:3.8
 # Label
 LABEL maintainer="Mallesh"
 
+COPY ./techtrends /app
 
 # Set the working directory inside the container
 WORKDIR /app
