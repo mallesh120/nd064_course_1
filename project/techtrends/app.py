@@ -15,6 +15,7 @@ def get_post(post_id):
     connection = get_db_connection()
     post = connection.execute('SELECT * FROM posts WHERE id = ?',
                         (post_id,)).fetchone()
+    app.logger.info('An existing article is retrieved. The title of the article should be recorded in the log line.')
     connection.close()
     return post
 
@@ -36,13 +37,15 @@ def index():
 def post(post_id):
     post = get_post(post_id)
     if post is None:
-      return render_template('404.html'), 404
+        app.logger.info('A non-existing article is accessed and a 404 page is returned.')
+        return render_template('404.html'), 404
     else:
       return render_template('post.html', post=post)
 
 # Define the About Us page
 @app.route('/about')
 def about():
+    app.logger.info('The "About Us" page is retrieved.')
     return render_template('about.html')
 
 # Define the post creation functionality 
@@ -62,8 +65,28 @@ def create():
             connection.close()
 
             return redirect(url_for('index'))
-
+    app.logger.info('A new article is created. The title of the new article should be recorded in the logline.')
     return render_template('create.html')
+
+@app.route('/status')
+def status():
+    response = app.response_class(
+            response=json.dumps({"result":"OK - healthy"}),
+            status=200,
+            mimetype='application/json'
+    )
+    app.logger.info('status request successfull')
+    return response
+
+@app.route('/metrics')
+def metrics():
+    response = app.response_class(
+            response=json.dumps({"status":"success","code":0,"data":{"UserCount":140,"UserCountActive":23}}),
+            status=200,
+            mimetype='application/json'
+    )
+    app.logger.info('metrics request successfull')
+    return response
 
 # start the application on port 3111
 if __name__ == "__main__":
